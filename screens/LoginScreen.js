@@ -1,25 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import * as Yup from "yup";
+import authApi from "../api/auth";
+import useAuth from "../auth/useAuth";
 import Screen from "../components/Screen";
-import { AppForm, AppFormField, SubmitButton } from "../components/forms";
 import Title from "../components/Title";
+import {
+  AppForm,
+  AppFormField,
+  ErrorMessage,
+  SubmitButton,
+} from "../components/forms";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
   password: Yup.string().required().min(4).label("Password"),
 });
 const LoginScreen = () => {
+  const { logIn } = useAuth();
+  const [loginFailed, setLoginFailed] = useState(false);
+  const handleSubmit = async ({ email, password }) => {
+    const result = await authApi.login(email, password);
+    if (!result.ok) {
+      setLoginFailed(true);
+    }
+    setLoginFailed(false);
+    console.log(result.data);
+    logIn(result.data);
+  };
   return (
     <Screen>
       <Image source={require("../assets/logo-red.png")} style={styles.logo} />
-      <Title title={`Log in to Dealit!`} style={{fontFamily:"MonaSansBold"}}/>
-      <View style={{ marginHorizontal: 10, alignItems: "center" }}>
+      <Title
+        title={`Log in to Dealit!`}
+        style={{ fontFamily: "MonaSansBold" }}
+      />
+      <View style={{ marginHorizontal: 10, flex: 1 }}>
         <AppForm
           initialValues={{ email: "", password: "" }}
-          onSubmit={(values) => console.log(values)}
+          onSubmit={handleSubmit}
+          style={{}}
           validationSchema={validationSchema}
         >
+          <ErrorMessage
+            error={`Invalid email and/or password.`}
+            visible={loginFailed}
+          />
           <AppFormField
             name={`email`}
             icon={`user`}

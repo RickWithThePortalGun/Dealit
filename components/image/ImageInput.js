@@ -23,13 +23,7 @@ const ImageInput = ({ imageUri, onChangeImage }) => {
     requestMediaLibraryPermission();
   }, []);
 
-  useEffect(() => {
-    if (mediaLibraryPermissionGranted) {
-      console.log("Media Library status = Granted");
-    } else if (!mediaLibraryPermissionGranted) {
-      console.log("Media Library status = Denied");
-    }
-  }, [mediaLibraryPermissionGranted]); // Run this effect only when permission state changes
+ // Run this effect only when permission state changes
 
   const handlePress = () => {
     if (!imageUri) selectImage();

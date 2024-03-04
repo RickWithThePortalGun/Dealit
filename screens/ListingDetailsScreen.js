@@ -1,16 +1,17 @@
-import { Image, StyleSheet, Text, View,TouchableOpacity } from "react-native";
+import {StyleSheet, Text, View,TouchableOpacity } from "react-native";
 import React from "react";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ListItem from "../components/list/ListItem";
 import {FontAwesome} from "@expo/vector-icons"
+import { Image } from "react-native-expo-image-cache";
 
 export default function ListingDetailsScreen({route}) {
   const listing=route.params;
   return (
     <View style={styles.container}>
     <View style={styles.imageView}>
-      <Image style={styles.image} source={{uri:listing.images[0].url}} />
+      <Image style={styles.image} preview={{uri:listing.images[0].thumbnailUrl}} tint="light" uri={listing.images[0].url} />
       <View
         style={{
           zIndex: 1,
@@ -29,7 +30,7 @@ export default function ListingDetailsScreen({route}) {
         style={{
           zIndex: 1,
           padding: 10,
-          borderRadius: "50%",
+          borderRadius: 25,
           position: "absolute",
           top: "13%",
           right: "3%",
@@ -140,10 +141,7 @@ export default function ListingDetailsScreen({route}) {
         <Text
           style={{ color: colors.light, paddingTop: 10, lineHeight: 18 }}
           numberOfLines={3}
-        >
-          Where rustic charm meets the heartbeat of the city. Nestled in the
-          vibrant center, this enchanting couch offers a unique blend of urban
-          convenience and timeless tranquility. As...
+        >{listing.description ? listing.description : "No description was provided by this seller."}
         </Text>
       </View>
       <View style={styles.propertydesc}>
@@ -169,7 +167,7 @@ export default function ListingDetailsScreen({route}) {
                 width: 30,
                 height: 30,
                 marginVertical: 10,
-                borderRadius: "50%",
+                borderRadius: 25,
                 overflow: "hidden",
               }}
             >

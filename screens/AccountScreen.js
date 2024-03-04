@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 
 import ListItemSeparator from "../components/list/ListItemSeparator";
@@ -7,6 +7,7 @@ import colors from "../config/colors";
 import Icon from "../components/Icon";
 import Screen from "../components/Screen";
 import routes from "../navigation/routes";
+import useAuth from "../auth/useAuth";
 
 const menuItems = [
   {
@@ -22,17 +23,19 @@ const menuItems = [
       name: "email",
       backgroundColor: colors.secondary,
     },
-    targetScreen:"Messages"
+    targetScreen: "Messages",
   },
 ];
 
-function AccountScreen({navigation}) {
+function AccountScreen({ navigation }) {
+  const { user, logOut } = useAuth();
+  
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
         <ListItem
-          title="Oyeniyi Victor"
-          subTitle="iamgojosatoru@icloud.com"
+          title={user.name}
+          subTitle={user.email}
           image={require("../assets/aiimg.jpg")}
         />
       </View>
@@ -44,7 +47,7 @@ function AccountScreen({navigation}) {
           renderItem={({ item }) => (
             <ListItem
               title={item.title}
-              onPress={()=>navigation.navigate(routes.MESSAGES)}
+              onPress={() => navigation.navigate(routes.MESSAGES)}
               IconComponent={
                 <Icon
                   name={item.icon.name}
@@ -57,6 +60,7 @@ function AccountScreen({navigation}) {
       </View>
       <ListItem
         title="Log Out"
+        onPress={()=>logOut()}
         IconComponent={<Icon name="logout" backgroundColor="#ffe66d" />}
       />
     </Screen>

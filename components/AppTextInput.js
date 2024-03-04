@@ -8,7 +8,7 @@ const AppTextInput = ({ icon, ...otherProps }) => {
   return (
     <View style={styles.container}>
       {icon && <FontAwesome5 solid name={icon} size={20} color={colors.medium} style={styles.icon}/>}
-      <TextInput placeholderTextColor={defaultStyles.colors.medium} {...otherProps} style={defaultStyles.text} />
+      <TextInput placeholderTextColor={defaultStyles.colors.medium} {...otherProps} style={[{flex:1},defaultStyles.text]} />
     </View>
   );
 };

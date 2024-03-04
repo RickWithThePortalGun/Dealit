@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import * as Yup from "yup";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import Screen from "../components/Screen";
 import Title from "../components/Title";
+import listingsApi from "../api/listings";
 import {
   AppForm,
   AppFormField,
@@ -12,13 +13,14 @@ import {
 } from "../components/forms";
 import FormImagePicker from "../components/forms/FormImagePicker";
 import useLocation from "../hooks/useLocation";
+import UploadScreen from "./UploadScreen";
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required().min(1).label("Title"),
   price: Yup.number().required().min(1).max(10000).label("Price"),
   description: Yup.string().label("Description"),
   category: Yup.object().required().nullable().label("Category"),
-  images: Yup.array().min(1, "An image is required").label("Images"),
+  images: Yup.array().min(1, "An image is required"),
 });
 const categories = [
   { label: "Furniture", value: 1, backgroundColor: "red", icon: "table-chair" },
@@ -42,9 +44,28 @@ const categories = [
   { label: "Others", value: 9, backgroundColor: "magenta", icon: "tab" },
 ];
 const ListingEditScreen = () => {
-  const location=useLocation();
+  const location = useLocation();
+  const [uploadVisible, setUploadVisible] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const handleSubmit = async (listing, { resetForm }) => {
+    setProgress(0);
+    setUploadVisible(true);
+    const result = await listingsApi.addListing(
+      { ...listing, location },
+      (progress) => setProgress(progress)
+    );
+
+    if (!result.ok) {
+      setUploadVisible(false);
+      return alert("Could not save the listing");
+    }
+
+    resetForm();
+  };
   return (
     <Screen>
+      <UploadScreen onDone={()=>setUploadVisible(false)} progress={progress} visible={uploadVisible} />
       <View style={{ paddingHorizontal: 15, marginTop: 20 }}>
         <Image source={require("../assets/logo-red.png")} style={styles.logo} />
         <Title title={`Post a property`} />
@@ -56,7 +77,7 @@ const ListingEditScreen = () => {
             category: null,
             images: [],
           }}
-          onSubmit={() => console.log(location)}
+          onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
           <FormImagePicker name="images" />
@@ -91,6 +112,7 @@ const ListingEditScreen = () => {
             icon={`audio-description`}
             numberofLines={3}
             name="description"
+            keyboardType="email-address"
             placeholder="Description"
           />
           <View style={{ marginTop: 30 }}>

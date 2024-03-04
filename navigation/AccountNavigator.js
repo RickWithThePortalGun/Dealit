@@ -7,8 +7,8 @@ const Stack = createStackNavigator();
 
 const AccountNavigator = () => (
   <Stack.Navigator>
-    <Stack.Screen name="Account" options={{headerShown:false}} component={AccountScreen} />
-    <Stack.Screen name="Messages" component={MessagesScreen} options={{headerShown:false}}/>
+    <Stack.Screen name="Account" options={{headerShown:false,presentation:"modal"}} component={AccountScreen} />
+    <Stack.Screen name="Messages" component={MessagesScreen} options={{headerShown:false, presentation:"modal"}}/>
   </Stack.Navigator>
 );
 

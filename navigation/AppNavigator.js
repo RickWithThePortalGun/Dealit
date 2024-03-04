@@ -14,7 +14,8 @@ const AppNavigator = () => (
     <Tab.Screen
       name="Feed"
       component={FeedNavigator}
-      options={{headerShown:false,
+      options={{
+        headerShown: false,
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="home" color={color} size={size} />
         ),
@@ -23,7 +24,8 @@ const AppNavigator = () => (
     <Tab.Screen
       name="ListingEdit"
       component={ListingEditScreen}
-      options={({ navigation }) => ({headerShown:false,
+      options={({ navigation }) => ({
+        headerShown: false,
         tabBarButton: () => (
           <NewListingButton
             onPress={() => navigation.navigate(routes.LISTING_EDIT)}
@@ -41,7 +43,8 @@ const AppNavigator = () => (
     <Tab.Screen
       name="Account"
       component={AccountNavigator}
-      options={{headerShown:false,
+      options={{
+        headerShown: false,
         tabBarIcon: ({ color, size }) => (
           <MaterialCommunityIcons name="account" color={color} size={size} />
         ),

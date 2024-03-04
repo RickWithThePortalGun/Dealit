@@ -8,35 +8,22 @@ import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import AppText from "../components/AppText";
 import ActivityIndicator from "../components/ActivityIndicator";
+import useApi from "../hooks/useApi";
 
 function ListingsScreen({ navigation }) {
-  const [listings, setListings] = useState([]);
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const getListingsApi = useApi(listingsApi.getListings);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    loadListings();
+    getListingsApi.request();
   }, []);
 
-  const loadListings = async () => {
-    setError(false);
-    setLoading(true);
-    const response = await listingsApi.getListings();
-    setLoading(false);
-    if (!response.ok) {
-      console.log("error connnecting to server");
-      return setError(true);
-    }
-    setError(false);
-    setListings(response.data);
-    console.log(listings);
-  };
   return (
     <Screen style={styles.screen}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator visible={loading} />
+        <ActivityIndicator visible={getListingsApi.loading} />
       </View>
-      {error && (
+      {getListingsApi.error && !getListingsApi.loading ? (
         <>
           <View
             style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
@@ -45,20 +32,26 @@ function ListingsScreen({ navigation }) {
             <AppButton
               title="Retry"
               style={{ marginHorizontal: 20, width: "50%" }}
-              onPress={loadListings}
+              color="black"
+              onPress={getListingsApi.request}
             />
           </View>
         </>
+      ) : (
+        ""
       )}
-      {!loading && (
+      {!getListingsApi.loading && (
         <FlatList
-          data={listings}
+          refreshing={refreshing}
+          onRefresh={getListingsApi.request}
+          data={getListingsApi.data}
           keyExtractor={(listing) => listing.id.toString()}
           renderItem={({ item }) => (
             <Card
               title={item.title}
               subTitle={"$" + item.price}
               imageUrl={item.images[0].url}
+              thumbnailUrl={item.images[0].thumbnailUrl}
               onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
             />
           )}
