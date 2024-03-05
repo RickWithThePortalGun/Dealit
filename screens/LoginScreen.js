@@ -27,6 +27,7 @@ const LoginScreen = () => {
     setLoginFailed(false);
     console.log(result.data);
     logIn(result.data);
+    console.log(result.data)
   };
   return (
     <Screen>
@@ -39,7 +40,6 @@ const LoginScreen = () => {
         <AppForm
           initialValues={{ email: "", password: "" }}
           onSubmit={handleSubmit}
-          style={{}}
           validationSchema={validationSchema}
         >
           <ErrorMessage
